@@ -3,54 +3,40 @@ import ExcursionsAPI from "./ExcursionsAPI";
 console.log("client");
 
 document.addEventListener("DOMContentLoaded", init);
-const tripsUrl = "http://localhost:3000/excursions";
+const tripApi = new ExcursionsAPI();
 
 function init() {
-	console.log("init");
 	loadTrips();
 }
 
 function loadTrips() {
-	fetch(tripsUrl)
-		.then(resp => {
-			if (resp.ok) {
-				return resp.json();
-			}
-			return Promise.reject(resp);
-		})
-		.then(data => console.log(data))
-		.then(data => console.log(Array.isArray(data)))
-
+	tripApi
+		.loadData()
 		.then(data => insertTripsToHtml(data))
 		.catch(err => console.error(err));
 }
 
 function insertTripsToHtml(tripsData) {
 	const tripPrototype = document.querySelector(".excursions__item--prototype");
+	console.log(tripPrototype);
 	const tripsWrapper = document.querySelector(".panel__excursions");
+	tripsWrapper.innerHTML = "";
 
 	tripsData.forEach(trip => {
-		const singleTrip = tripPrototype.cloneNode(true);
-		singleTrip.classList.remove("excursions__item--prototype");
-		console.log(singleTrip);
-
-		const tripTitle = tripPrototype.querySelector(".excursions__title");
-		const tripDescription = tripPrototype.querySelector(
-			".excursions__description"
-		);
-
-		const adultPrice = tripPrototype.querySelector(".adultPrice");
-		const childPrice = tripPrototype.querySelector(".childPrice");
-
-		console.log(adultPrice, childPrice);
-
-		tripTitle.innerText = trip.name;
-
-		console.log(trip.name);
-		tripDescription.innerText = trip.description;
-		adultPrice.innerText = trip.adultPrice;
-		childPrice.innerText = trip.childPrice;
-
-		tripsWrapper.appendChild(singleTrip);
+		const oneTrip = makeSingleTrip(tripPrototype, trip);
+		tripsWrapper.appendChild(oneTrip);
 	});
+}
+
+function makeSingleTrip(prototype, trip) {
+	const singleTrip = prototype.cloneNode(true);
+	singleTrip.classList.remove("excursions__item--prototype");
+
+	prototype.querySelector(".excursions__title").innerText = trip.name;
+	prototype.querySelector(".excursions__description").innerText =
+		trip.description;
+	prototype.querySelector(".adultPrice").innerText = trip.adultPrice;
+	prototype.querySelector(".childPrice").innerText = trip.childPrice;
+
+	return singleTrip;
 }
