@@ -101,14 +101,18 @@ function addTripToSummary(basketElement) {
 	const summaryPrices = basketSummaryTrip.querySelector(".summary__prices");
 	const childrenNUmberInSummary = document.querySelector(".summary__children");
 	const adultsInSummary = document.querySelector(".summary__adult");
-	console.log(adultsInSummary);
+	const adultPrice = document.querySelector(".adultPrice");
+	const childrenPrice = document.querySelector(".childPrice");
+
+	console.log(childrenPrice.innerText);
 
 	tripTitle.innerText = basketElement.title;
 	summaryTotalPrice.innerText = `${
 		basketElement.adultNumber * basketElement.adultPrice +
 		basketElement.childNumber * basketElement.childPrice
 	} EUR`;
-	summaryPrices.innerText = `adults: ${adultsInSummary.innerText} x 99EUR, children: ${childrenNUmberInSummary.innerText} x 50EUR`;
+
+	summaryPrices.innerText = `adults: ${adultsInSummary.innerText} x ${adultPrice.innerText} EUR, children: ${childrenNUmberInSummary.innerText} x  ${childrenPrice.innerText} EUR`;
 
 	basketSummaryWrapper.appendChild(basketSummaryTrip);
 
