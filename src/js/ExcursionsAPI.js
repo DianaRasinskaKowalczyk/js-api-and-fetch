@@ -1,6 +1,7 @@
 class ExcursionsAPI {
 	constructor() {
 		this.url = "http://localhost:3000/excursions";
+		this.adminUrl = "http://localhost:3000/order";
 	}
 
 	loadData() {

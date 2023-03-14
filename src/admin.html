@@ -24,30 +24,31 @@
                 class="excursions__item excursions__item--prototype"
             >
                 <header class="excursions__header">
-                    <h2 class="excursions__title">Ogrodzieniec</h2>
-                    <p class="excursions__description">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Amet
+                    <h2 class="excursions__title editable">Ogrodzieniec</h2>
+                    <p class="excursions__description editable">Lorem, ipsum dolor sit amet consectetur adipisicing
+                        elit. Amet
                         aliquam quam laboriosam quaerat temporibus dicta vitae maxime! Nemo, nobis veritatis?</p>
                 </header>
                 <form class="excursions__form">
                     <div class="excursions__field">
                         <label class="excursions__field-name">
-                            Dorosły: <strong>99</strong>PLN
+                            Adult: <strong class="adultPrice editable">99</strong>EUR
                         </label>
                     </div>
                     <div class="excursions__field">
                         <label class="excursions__field-name">
-                            Dziecko: <strong>50</strong>PLN
+                            Child: <strong class="childPrice editable">50</strong>EUR
                         </label>
                     </div>
                     <div class="excursions__field excursions__field--submit">
                         <input
                             class="excursions__field-input excursions__field-input--update"
-                            value="edytuj"
+                            value="edit"
                             type="submit"
                         />
                         <input
                             class="excursions__field-input excursions__field-input--remove"
-                            value="usuń"
+                            value="delete"
                             type="submit"
                         />
                     </div>
@@ -61,7 +62,7 @@
             >
                 <div class="form__row">
                     <label class="form__label">
-                        Nazwa:<input
+                        Name:<input
                             class="form__field"
                             name="name"
                         />
@@ -69,7 +70,7 @@
                 </div>
                 <div class="form__row">
                     <label class="form__label">
-                        Opis:<textarea
+                        Description:<textarea
                             class="form__field form__field--longtext"
                             name="description"
                         ></textarea>
@@ -77,7 +78,7 @@
                 </div>
                 <div class="form__row">
                     <label class="form__label">
-                        Cena dorosły:<input
+                        Price-adult:<input
                             class="form__field"
                             type="number"
                             name="name"
@@ -86,7 +87,7 @@
                 </div>
                 <div class="form__row">
                     <label class="form__label">
-                        Cena dziecko:<input
+                        Price-child:<input
                             class="order__form__field"
                             type="number"
                             name="name"
@@ -96,7 +97,7 @@
                 <div class="order__field order__field--submit">
                     <input
                         class="order__field-input order__field-submit"
-                        value="dodaj"
+                        value="add"
                         type="submit"
                     />
                 </div>

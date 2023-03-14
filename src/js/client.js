@@ -3,7 +3,6 @@ import ExcursionsAPI from "./ExcursionsAPI";
 
 document.addEventListener("DOMContentLoaded", init);
 const tripApi = new ExcursionsAPI();
-let cartToApi = [];
 
 function init() {
 	loadTrips();
@@ -99,12 +98,10 @@ function addTripToSummary(basketElement) {
 		".summary__total-price"
 	);
 	const summaryPrices = basketSummaryTrip.querySelector(".summary__prices");
-	const childrenNUmberInSummary = document.querySelector(".summary__children");
+	const childrenInSummary = document.querySelector(".summary__children");
 	const adultsInSummary = document.querySelector(".summary__adult");
 	const adultPrice = document.querySelector(".adultPrice");
 	const childrenPrice = document.querySelector(".childPrice");
-
-	console.log(childrenPrice.innerText);
 
 	tripTitle.innerText = basketElement.title;
 	summaryTotalPrice.innerText = `${
@@ -112,10 +109,12 @@ function addTripToSummary(basketElement) {
 		basketElement.childNumber * basketElement.childPrice
 	} EUR`;
 
-	summaryPrices.innerText = `adults: ${adultsInSummary.innerText} x ${adultPrice.innerText} EUR, children: ${childrenNUmberInSummary.innerText} x  ${childrenPrice.innerText} EUR`;
+	adultsInSummary.innerText = basketElement.adultNumber;
+	childrenInSummary.innerText = basketElement.childNumber;
+	adultPrice.innerText = basketElement.adultPrice;
+	childrenPrice.innerText = basketElement.childPrice;
 
 	basketSummaryWrapper.appendChild(basketSummaryTrip);
-
 	addFinalPrice(basketElement);
 }
 
@@ -124,14 +123,8 @@ function createTripPrototype() {
 	const basketSummaryPrototype = basketSummaryWrapperEl.querySelector(
 		".summary__item--prototype"
 	);
-
-	console.log(basketSummaryPrototype);
 	const basketSummaryTripEl = basketSummaryPrototype.cloneNode(true);
-	console.log(basketSummaryTripEl);
 	basketSummaryTripEl.classList.remove("summary__item--prototype");
-	if (basketSummaryPrototype.classList.contains("summary__item--prototype")) {
-		basketSummaryPrototype.classList.remove = "summary__item--prototype";
-	}
 	return basketSummaryTripEl;
 }
 
@@ -173,6 +166,7 @@ function submitOrder(e) {
 		);
 
 		resetForms();
+		document.querySelector(".order__total-price-value").innerText = "0EUR";
 	} else {
 		errors.forEach(function (error) {
 			const errorLiEl = document.createElement("li");
@@ -201,18 +195,14 @@ function validateOrderForm(inputListEl, errorsEl) {
 	}
 }
 
-function sendOrderToCart(name, email, price) {
-	const panelSummary = document.querySelector(".panel__summary");
-	const tripsSummary = panelSummary.querySelectorAll(".summary__item");
+function sendOrderToCart(name, email, totalPrice) {
+	const tripsSummary = document.querySelectorAll(".summary__item");
 
-	console.log(tripsSummary);
+	const dataToApi = { name, email, totalPrice, tripInfo: [] };
 
 	tripsSummary.forEach(trip => {
 		const title = trip.querySelector(".summary__name");
-		console.log(trip);
-
 		const childPrice = trip.querySelector(".childPrice");
-		console.log(childPrice);
 		const adultPrice = trip.querySelector(".adultPrice");
 		const childrenNumber = trip.querySelector(".summary__children");
 		const adultNumber = trip.querySelector(".summary__adult");
@@ -220,16 +210,27 @@ function sendOrderToCart(name, email, price) {
 		const tripsData = {
 			title: title.innerText,
 			adultPrice: adultPrice.innerText,
-			adultNumber: adultNumber,
-			childPrice: childPrice,
-			childNumber: childrenNumber,
+			adultNumber: adultNumber.innerText,
+			childPrice: childPrice.innerText,
+			childNumber: childrenNumber.innerText,
 		};
 
-		console.log(tripsData);
-		cartToApi.push(tripsData);
+		dataToApi.tripInfo.push(tripsData);
 	});
 
-	console.log(cartToApi);
+	dataToApi.tripInfo.splice(0, 1);
+
+	const options = {
+		method: "POST",
+		body: JSON.stringify(dataToApi),
+		headers: { "Content-Type": "application/json" },
+	};
+
+	const url = "http://localhost:3000/orders";
+	fetch(url, options)
+		.then(resp => console.log(resp))
+		.catch(error => console.error(error));
+	// .finally(loadTrips);
 }
 
 function resetForms() {
