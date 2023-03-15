@@ -6,16 +6,9 @@ const tripApi = new ExcursionsAPI();
 
 function init() {
 	loadTrips();
-	const tripsWrapper = document.querySelector(".excursions");
-	tripsWrapper.addEventListener("submit", makeTripSummary);
-
-	const orderSubmit = document.querySelector(".order");
-	const summaryList = document.querySelectorAll(".panel__summary");
-
-	orderSubmit.addEventListener("submit", submitOrder);
-	summaryList.forEach(function (item) {
-		item.addEventListener("click", removeTrip);
-	});
+	addTripsToCart();
+	deleteTrip();
+	sendTotalOrder();
 }
 
 function loadTrips() {
@@ -47,12 +40,17 @@ function makeSingleTrip(prototype, trip) {
 	return singleTrip;
 }
 
+function addTripsToCart() {
+	const tripsWrapper = document.querySelector(".excursions");
+	tripsWrapper.addEventListener("submit", makeTripSummary);
+}
+
 function makeTripSummary(e) {
 	e.preventDefault();
 	const singleTripEl = e.target.parentElement;
 	const title = singleTripEl.querySelector(".excursions__title");
-	const childPrice = singleTripEl.querySelector(".adultPrice");
-	const adultPrice = singleTripEl.querySelector(".childPrice");
+	const adultPrice = singleTripEl.querySelector(".adultPrice");
+	const childPrice = singleTripEl.querySelector(".childPrice");
 	const adultsNumber = Number(e.target[0].value);
 	const childrenNumber = Number(e.target[1].value);
 
@@ -97,11 +95,11 @@ function addTripToSummary(basketElement) {
 	const summaryTotalPrice = basketSummaryTrip.querySelector(
 		".summary__total-price"
 	);
-	const summaryPrices = basketSummaryTrip.querySelector(".summary__prices");
-	const childrenInSummary = document.querySelector(".summary__children");
-	const adultsInSummary = document.querySelector(".summary__adult");
-	const adultPrice = document.querySelector(".adultPrice");
-	const childrenPrice = document.querySelector(".childPrice");
+	const childrenInSummary =
+		basketSummaryTrip.querySelector(".summary__children");
+	const adultsInSummary = basketSummaryTrip.querySelector(".summary__adult");
+	const adultPrice = basketSummaryTrip.querySelector(".adultPrice");
+	const childrenPrice = basketSummaryTrip.querySelector(".childPrice");
 
 	tripTitle.innerText = basketElement.title;
 	summaryTotalPrice.innerText = `${
@@ -129,9 +127,6 @@ function createTripPrototype() {
 }
 
 function addFinalPrice(basketEl) {
-	const basketSummaryWrapperElement = document.querySelector(".panel__summary");
-	const tripsList =
-		basketSummaryWrapperElement.querySelectorAll(".summary__item");
 	const totalPrice = document.querySelector(".order__total-price-value");
 
 	finalPrice +=
@@ -139,6 +134,11 @@ function addFinalPrice(basketEl) {
 		parseFloat(basketEl.childNumber * basketEl.childPrice);
 
 	totalPrice.innerText = `${finalPrice} EUR`;
+}
+
+function sendTotalOrder() {
+	const orderSubmit = document.querySelector(".order");
+	orderSubmit.addEventListener("submit", submitOrder);
 }
 
 function submitOrder(e) {
@@ -169,12 +169,16 @@ function submitOrder(e) {
 		document.querySelector(".order__total-price-value").innerText = "0EUR";
 	} else {
 		errors.forEach(function (error) {
-			const errorLiEl = document.createElement("li");
-			errorLiEl.innerText = error;
-			errorLiEl.style.color = "pink";
-			alertsList.appendChild(errorLiEl);
+			createErrorAlert(error, alertsList);
 		});
 	}
+}
+
+function createErrorAlert(error, alertsList) {
+	const errorLiEl = document.createElement("li");
+	errorLiEl.innerText = error;
+	errorLiEl.style.color = "pink";
+	alertsList.appendChild(errorLiEl);
 }
 
 function validateOrderForm(inputListEl, errorsEl) {
@@ -220,17 +224,10 @@ function sendOrderToCart(name, email, totalPrice) {
 
 	dataToApi.tripInfo.splice(0, 1);
 
-	const options = {
-		method: "POST",
-		body: JSON.stringify(dataToApi),
-		headers: { "Content-Type": "application/json" },
-	};
-
-	const url = "http://localhost:3000/orders";
-	fetch(url, options)
+	tripApi
+		.addDataToOrder(dataToApi)
 		.then(resp => console.log(resp))
 		.catch(error => console.error(error));
-	// .finally(loadTrips);
 }
 
 function resetForms() {
@@ -241,6 +238,13 @@ function resetForms() {
 	const allForms = document.querySelectorAll("form");
 	allForms.forEach(function (form) {
 		form.reset();
+	});
+}
+
+function deleteTrip() {
+	const summaryList = document.querySelectorAll(".panel__summary");
+	summaryList.forEach(function (item) {
+		item.addEventListener("click", removeTrip);
 	});
 }
 
@@ -262,7 +266,5 @@ function updateTotalPrice() {
 	summaryPricesList.forEach(price => {
 		total += Number(price.innerText.replace("EUR", ""));
 	});
-
-	const sum = total;
-	totalPrice.innerText = sum + " EUR";
+	totalPrice.innerText = total + " EUR";
 }

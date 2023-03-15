@@ -2,18 +2,13 @@ import "./../css/admin.css";
 
 import ExcursionsAPI from "./ExcursionsAPI";
 document.addEventListener("DOMContentLoaded", init);
-const adminUrl = "http://localhost:3000/excursions";
-const addTripForm = document.querySelector(".form");
-
-const allTrips = document.querySelector(".panel__excursions");
-
 const tripApi = new ExcursionsAPI();
 
 function init() {
 	loadTrips();
-	allTrips.addEventListener("submit", removeTrip);
-	allTrips.addEventListener("submit", editTrip);
-	addTripForm.addEventListener("submit", addTrip);
+	addTripToPanel();
+	deleteTrip();
+	updateTrip();
 }
 
 function loadTrips() {
@@ -26,7 +21,11 @@ function loadTrips() {
 function insertTripsToHtml(tripsData) {
 	const tripPrototype = document.querySelector(".excursions__item--prototype");
 	const tripsWrapper = document.querySelector(".panel__excursions");
-	tripsWrapper.innerHTML = "";
+	Array.from(tripsWrapper.children).forEach(child => {
+		if (!child.className.includes("excursions__item--prototype")) {
+			child.parentElement.removeChild(child);
+		}
+	});
 	tripsData.forEach(trip => {
 		const oneTrip = makeSingleTrip(tripPrototype, trip);
 		tripsWrapper.appendChild(oneTrip);
@@ -36,30 +35,42 @@ function insertTripsToHtml(tripsData) {
 function makeSingleTrip(prototype, trip) {
 	const singleTrip = prototype.cloneNode(true);
 	singleTrip.classList.remove("excursions__item--prototype");
+	singleTrip.dataset.id = trip.id;
 	singleTrip.querySelector(".excursions__title").innerText = trip.name;
 	singleTrip.querySelector(".excursions__description").innerText =
 		trip.description;
 	singleTrip.querySelector(".adultPrice").innerText = trip.adultPrice;
+	console.log(singleTrip.querySelector(".adultPrice").innerText);
 	singleTrip.querySelector(".childPrice").innerText = trip.childPrice;
 
 	return singleTrip;
 }
 
+function deleteTrip() {
+	const allTrips = document.querySelector(".panel__excursions");
+	allTrips.addEventListener("click", removeTrip);
+}
+
 function removeTrip(e) {
 	e.preventDefault();
 	const clickedTrip = e.target;
-	const tripToRemove = clickedTrip.parentElement.parentElement.parentElement;
-	allTrips.removeChild(tripToRemove);
 
-	const id = tripToRemove.dataset.id;
-	const options = {
-		method: "DELETE",
-	};
+	if (clickedTrip.className.includes("excursions__field-input--remove")) {
+		const tripToRemove = clickedTrip.parentElement.parentElement.parentElement;
+		allTrips.removeChild(tripToRemove);
 
-	fetch(`${adminUrl}/${id}`, options)
-		.then(resp => console.log(resp))
-		.catch(err => console.error(err))
-		.finally(loadTrips);
+		const id = tripToRemove.dataset.id;
+
+		tripApi
+			.removeData(id)
+			.catch(err => console.error(err))
+			.finally(loadTrips);
+	}
+}
+
+function addTripToPanel() {
+	const addTripForm = document.querySelector(".form");
+	addTripForm.addEventListener("submit", addTrip);
 }
 
 function addTrip(e) {
@@ -73,7 +84,7 @@ function addTrip(e) {
 	const dataToApi = {
 		name: tripName.value,
 		description: tripDescription.value,
-		childPrice: priceAdult.value,
+		adultPrice: priceAdult.value,
 		childPrice: priceChild.value,
 	};
 
@@ -85,8 +96,19 @@ function addTrip(e) {
 			alert("Fill in all empty spaces. Make sure to set a correct price.");
 		});
 	} else {
-		addDataToApi(dataToApi);
+		tripApi
+			.addDataToApi(dataToApi)
+			.then(resetForm)
+			.catch(err => console.error(err))
+			.finally(loadTrips);
 	}
+}
+
+function resetForm() {
+	const allInputs = document.querySelectorAll("form");
+	allInputs.forEach(function (form) {
+		form.reset();
+	});
 }
 
 function inputEvaluation(errorsArray, adultPrice, childrenPrice) {
@@ -100,27 +122,21 @@ function inputEvaluation(errorsArray, adultPrice, childrenPrice) {
 	}
 }
 
-function addDataToApi(data) {
-	const options = {
-		method: "POST",
-		body: JSON.stringify(data),
-		headers: { "Content-Type": "application/json" },
-	};
-	fetch(adminUrl, options)
-		.then(resp => console.log(resp))
-		.catch(err => console.error(err))
-		.finally(loadTrips);
+function updateTrip() {
+	const allTrips = document.querySelector(".panel__excursions");
+	allTrips.addEventListener("click", editTrip);
 }
 
 function editTrip(e) {
 	e.preventDefault();
-	const clickedTrip = e.currentTarget;
+	const clickedTrip = e.target;
 
-	console.log(clickedTrip);
-
-	if (clickedTrip.classList.contains("excursions__field-input--update")) {
-		const parentEl = targetEl.parentElement.parentElement;
+	if (clickedTrip.className.includes("excursions__field-input--update")) {
+		const parentEl = clickedTrip.parentElement.parentElement.parentElement;
+		console.log(parentEl);
 		const editableList = parentEl.querySelectorAll(".editable");
+		console.log(editableList);
+		console.log([...editableList]);
 		const isEditable = [...editableList].every(
 			editItem => editItem.isContentEditable
 		);
@@ -128,30 +144,26 @@ function editTrip(e) {
 		if (isEditable) {
 			const id = parentEl.dataset.id;
 
+			const [name, description, adultPrice, childPrice] = editableList;
+
 			const dataToEdit = {
-				name: editableList[0].innerText,
-				description: editableList[1].innerText,
-				adultPrice: editableList[2].innerText,
-				childPrice: editableList[3].innerText,
+				name: name.innerText,
+				description: description.innerText,
+				adultPrice: adultPrice.innerText,
+				childPrice: childPrice.innerText,
 			};
 
-			const options = {
-				method: "PUT",
-				body: JSON.stringify(dataToEdit),
-				headers: { "Content-Type": "application/json" },
-			};
-
-			fetch(`${apiUrl}/${id}`, options)
-				.then(resp => console.log(resp))
+			tripApi
+				.editData(id, dataToEdit)
 				.catch(err => console.error(err))
 				.finally(() => {
-					targetEl.innerText = "edit";
-					spanList.forEach(span => (span.contentEditable = false));
+					clickedTrip.value = "edit";
+					editableList.forEach(editItem => (editItem.contentEditable = false));
 				});
 		} else {
-			clickedTrip.innerText = "save";
+			clickedTrip.value = "save";
 			editableList.forEach(editItem => {
-				editItem.isContentEditable = true;
+				editItem.contentEditable = true;
 			});
 		}
 	}
