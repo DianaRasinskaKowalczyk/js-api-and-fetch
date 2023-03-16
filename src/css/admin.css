@@ -4,8 +4,18 @@
 	box-sizing: border-box;
 }
 
+body {
+	font-family: "Poppins", sans-serif;
+	overflow-x: hidden;
+}
+
 ul {
 	list-style: none;
+}
+.main__title {
+	margin-top: 20px;
+	margin-left: 180px;
+	color: darkmagenta;
 }
 
 .panel {
@@ -24,20 +34,64 @@ ul {
 	flex-wrap: wrap;
 }
 
-.excurions__item {
-	border: 1px solid #bbb;
+.excursions__item {
+	background-color: rgb(252, 252, 252);
+	border: 1px solid darkmagenta;
 	border-radius: 5px;
 	margin: 10px;
 	padding: 20px;
 	width: calc(50% - 20px);
 }
 
+.excursions__description {
+	color: grey;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	text-align: justify;
+}
+
+.excursions__title,
+.excursions__field-name,
+.excursions__field-inpu,
+.form {
+	color: darkmagenta;
+}
+
+.excursions__field {
+	margin-top: 5px;
+}
+
+.excursions__field-name {
+	margin-bottom: 5px;
+}
+
 .excursions__item--prototype {
 	display: none;
 }
 
+.excursions__field--submit {
+	display: flex;
+	justify-content: space-between;
+}
+.excursions__field-input,
+.order__field-submit {
+	padding: 10px;
+	margin-top: 20px;
+	border-radius: 5px;
+	border: 1px solid rgb(55, 235, 237);
+	background-color: white;
+}
+
+.excursions__field-input:hover {
+	background-color: rgb(55, 235, 237);
+}
+
+.order__field-submit:hover {
+	color: rgb(55, 235, 237);
+	background-color: darkmagenta;
+}
+
 .panel__form {
-	background-color: #f4f4f4;
 	padding: 20px;
 	width: 30%;
 }
@@ -55,4 +109,18 @@ ul {
 
 .form__field--longtext {
 	height: 100px;
+}
+
+.order {
+	margin-left: 30px;
+}
+
+.form__row {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.form__label {
+	display: flex;
+	flex-direction: column;
 }
