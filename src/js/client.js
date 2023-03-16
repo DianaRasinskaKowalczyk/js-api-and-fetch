@@ -1,5 +1,6 @@
 import "./../css/client.css";
 import ExcursionsAPI from "./ExcursionsAPI";
+import showAlert from "./helper";
 
 document.addEventListener("DOMContentLoaded", init);
 const tripApi = new ExcursionsAPI();
@@ -22,8 +23,12 @@ function insertTripsToHtml(tripsData) {
 	const tripPrototype = document.querySelector(".excursions__item--prototype");
 	const tripsWrapper = document.querySelector(".panel__excursions");
 
+	clearTrips(tripsData, tripPrototype, tripsWrapper);
+}
+
+function clearTrips(tripsData, prototype, tripsWrapper) {
 	tripsData.forEach(trip => {
-		const oneTrip = makeSingleTrip(tripPrototype, trip);
+		const oneTrip = makeSingleTrip(prototype, trip);
 		tripsWrapper.appendChild(oneTrip);
 	});
 }
@@ -51,38 +56,41 @@ function makeTripSummary(e) {
 	const title = singleTripEl.querySelector(".excursions__title");
 	const adultPrice = singleTripEl.querySelector(".adultPrice");
 	const childPrice = singleTripEl.querySelector(".childPrice");
-	const adultsNumber = Number(e.target[0].value);
-	const childrenNumber = Number(e.target[1].value);
+
+	const [adultsNumber, childrenNumber] = e.target;
+	console.log(Number(adultsNumber.value), Number(childrenNumber.value));
+
+	const adultNumber = Number(adultsNumber.value);
+	const childNumber = Number(childrenNumber.value);
+
+	// const adultsNumber = Number(e.target[0].value);
+	// const childrenNumber = Number(e.target[1].value);
 
 	const tripBasket = {
 		title: title.innerText,
-		adultNumber: adultsNumber,
+		adultNumber: adultNumber,
 		adultPrice: adultPrice.innerText,
-		childNumber: childrenNumber,
+		childNumber: childNumber,
 		childPrice: childPrice.innerText,
 	};
 
-	let errors = [];
-	inputEvaluation(errors, adultsNumber, childrenNumber);
+	console.log(tripBasket);
 
-	if (errors.length > 0) {
-		errors.forEach(function (error) {
-			alert("Choose number of participants");
-		});
-	} else {
-		addTripToSummary(tripBasket);
-	}
+	let errors = [];
+	inputEvaluation(errors, adultNumber, childNumber);
+
+	showAlert(errors, addTripToSummary, tripBasket);
 }
 
 function inputEvaluation(errorsArray, adultNr, childrenNr) {
-	if (Number.isNaN(Number(adultNr)) || Number.isNaN(Number(childrenNr))) {
-		errorsArray.push("This is not a number");
-	}
-	if (adultNr < 0 || childrenNr < 0) {
-		errorsArray.push("Please choose correct number of participants");
-	}
-	if (adultNr === 0 && childrenNr === 0) {
-		errorsArray.push("Fill in at least one field");
+	if (
+		Number.isNaN(Number(adultNr)) ||
+		Number.isNaN(Number(childrenNr)) ||
+		adultNr <= 0 ||
+		childrenNr <= 0 ||
+		(adultNr === "" && childrenNr === "")
+	) {
+		errorsArray.push("Choose correct number of participants");
 	}
 }
 
@@ -225,7 +233,7 @@ function sendOrderToCart(name, email, totalPrice) {
 	dataToApi.tripInfo.splice(0, 1);
 
 	tripApi
-		.addDataToOrder(dataToApi)
+		.addOrder(dataToApi)
 		.then(resp => console.log(resp))
 		.catch(error => console.error(error));
 }
@@ -259,12 +267,14 @@ function removeTrip(e) {
 function updateTotalPrice() {
 	const summaryContainer = document.querySelector(".summary");
 	const summaryPricesList = summaryContainer.querySelectorAll(
-		".summary__total-price"
+		"li:not(.summary__item--prototype) .summary__total-price"
 	);
-	const totalPrice = document.querySelector(".order__total-price-value");
-	let total = 0;
+	const totalPrice = document.querySelector(" .order__total-price-value");
+
+	console.log(totalPrice);
+	finalPrice = 0;
 	summaryPricesList.forEach(price => {
-		total += Number(price.innerText.replace("EUR", ""));
+		finalPrice += Number(price.innerText.replace("EUR", ""));
 	});
-	totalPrice.innerText = total + " EUR";
+	totalPrice.innerText = finalPrice + " EUR";
 }

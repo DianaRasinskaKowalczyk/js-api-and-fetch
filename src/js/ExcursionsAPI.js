@@ -8,7 +8,7 @@ class ExcursionsAPI {
 		return this._fetch();
 	}
 
-	addDataToApi(data) {
+	add(data) {
 		const options = {
 			method: "POST",
 			body: JSON.stringify(data),
@@ -46,7 +46,7 @@ class ExcursionsAPI {
 		return this._fetch(options, `/${id}`);
 	}
 
-	addDataToOrder(dataToApi) {
+	addOrder(dataToApi) {
 		const options = {
 			method: "POST",
 			body: JSON.stringify(dataToApi),

@@ -1,12 +1,13 @@
 import "./../css/admin.css";
-
 import ExcursionsAPI from "./ExcursionsAPI";
+import showAlert from "./helper";
+
 document.addEventListener("DOMContentLoaded", init);
 const tripApi = new ExcursionsAPI();
 
 function init() {
 	loadTrips();
-	addTripToPanel();
+	addNewTrip();
 	deleteTrip();
 	updateTrip();
 }
@@ -40,7 +41,6 @@ function makeSingleTrip(prototype, trip) {
 	singleTrip.querySelector(".excursions__description").innerText =
 		trip.description;
 	singleTrip.querySelector(".adultPrice").innerText = trip.adultPrice;
-	console.log(singleTrip.querySelector(".adultPrice").innerText);
 	singleTrip.querySelector(".childPrice").innerText = trip.childPrice;
 
 	return singleTrip;
@@ -68,18 +68,16 @@ function removeTrip(e) {
 	}
 }
 
-function addTripToPanel() {
+function addNewTrip() {
 	const addTripForm = document.querySelector(".form");
-	addTripForm.addEventListener("submit", addTrip);
+	addTripForm.addEventListener("submit", createNewTrip);
 }
 
-function addTrip(e) {
+function createNewTrip(e) {
 	e.preventDefault();
-	console.log(addTripForm);
-	const tripName = addTripForm.elements[0];
-	const tripDescription = addTripForm.querySelector(".form__field--longtext");
-	const priceAdult = addTripForm.elements[2];
-	const priceChild = addTripForm.elements[3];
+	const addTripForm = document.querySelector(".form");
+	const [tripName, tripDescription, priceAdult, priceChild] =
+		addTripForm.elements;
 
 	const dataToApi = {
 		name: tripName.value,
@@ -92,12 +90,10 @@ function addTrip(e) {
 	inputEvaluation(errors, priceAdult, priceChild, tripName, tripDescription);
 
 	if (errors.length > 0) {
-		errors.forEach(function (error) {
-			alert("Fill in all empty spaces. Make sure to set a correct price.");
-		});
+		alert(`${errors}`);
 	} else {
 		tripApi
-			.addDataToApi(dataToApi)
+			.add(dataToApi)
 			.then(resetForm)
 			.catch(err => console.error(err))
 			.finally(loadTrips);
@@ -111,14 +107,22 @@ function resetForm() {
 	});
 }
 
-function inputEvaluation(errorsArray, adultPrice, childrenPrice) {
+function inputEvaluation(
+	errorsArray,
+	adultPrice,
+	childrenPrice,
+	tripName,
+	tripDescription
+) {
 	if (
 		adultPrice.value < 0 ||
 		childrenPrice.value < 0 ||
 		adultPrice.value === "" ||
-		childrenPrice.value === ""
+		childrenPrice.value === "" ||
+		tripName.value === "" ||
+		tripDescription === ""
 	) {
-		errorsArray.push("Please set a price");
+		errorsArray.push("Please set a price and fill in all empty spaces");
 	}
 }
 
@@ -133,10 +137,7 @@ function editTrip(e) {
 
 	if (clickedTrip.className.includes("excursions__field-input--update")) {
 		const parentEl = clickedTrip.parentElement.parentElement.parentElement;
-		console.log(parentEl);
 		const editableList = parentEl.querySelectorAll(".editable");
-		console.log(editableList);
-		console.log([...editableList]);
 		const isEditable = [...editableList].every(
 			editItem => editItem.isContentEditable
 		);

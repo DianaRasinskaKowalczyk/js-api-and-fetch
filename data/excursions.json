@@ -37,6 +37,21 @@
         }
       ],
       "id": 1
+    },
+    {
+      "name": "Diana",
+      "email": "diana.rasinska@gmail.com",
+      "totalPrice": "500 EUR",
+      "tripInfo": [
+        {
+          "title": "Ericeira",
+          "adultPrice": "150",
+          "adultNumber": "1",
+          "childPrice": "100",
+          "childNumber": "1"
+        }
+      ],
+      "id": 2
     }
   ]
 }
