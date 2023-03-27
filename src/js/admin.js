@@ -90,7 +90,7 @@ function createNewTrip(e) {
 	inputEvaluation(errors, priceAdult, priceChild, tripName, tripDescription);
 
 	if (errors.length > 0) {
-		alert(`${errors}`);
+		showAlert(errors);
 	} else {
 		tripApi
 			.add(dataToApi)

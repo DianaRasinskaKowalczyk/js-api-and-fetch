@@ -1,57 +1,57 @@
 {
-  "excursions": [
-    {
-      "name": "Ericeira",
-      "description": "Ericeira is a civil parish and seaside community on the western coast of Portugal (in Mafra municipality, about 45km northwest of Lisbon) considered the surfing capital of Europe for being the only European spot among the World Surfing Reserves and due to the exceptional coastline conditions.",
-      "adultPrice": "150",
-      "childPrice": "100",
-      "id": 3
-    },
-    {
-      "name": "Porto",
-      "description": "The city lies along the Douro River, 2 miles (3 km) from the river's mouth on the Atlantic Ocean and 175 miles (280 km) north of Lisbon. World-famous for its port wine, Porto is Portugal's second largest city and is the commercial and industrial centre for the zone north of the Mondego River.",
-      "adultPrice": "150",
-      "childPrice": "100",
-      "id": 4
-    },
-    {
-      "name": "Lisbon",
-      "description": "Lisbon is the capital and the largest city of Portugal. With over 20 centuries of History, this city located on the 7 hills has more than 500,000 inhabitants. Lisbon shows multiple contrasts between the historical and modern, combining different cultures, trends and lifestyles.",
-      "adultPrice": "200",
-      "childPrice": "100",
-      "id": 5
-    }
-  ],
-  "orders": [
-    {
-      "name": "Diana",
-      "email": "diana.rasinska@gmail.com",
-      "totalPrice": "500 EUR",
-      "tripInfo": [
-        {
-          "title": "Ericeira",
-          "adultPrice": "150",
-          "adultNumber": "1",
-          "childPrice": "100",
-          "childNumber": "1"
-        }
-      ],
-      "id": 1
-    },
-    {
-      "name": "Diana",
-      "email": "diana.rasinska@gmail.com",
-      "totalPrice": "500 EUR",
-      "tripInfo": [
-        {
-          "title": "Ericeira",
-          "adultPrice": "150",
-          "adultNumber": "1",
-          "childPrice": "100",
-          "childNumber": "1"
-        }
-      ],
-      "id": 2
-    }
-  ]
+	"excursions": [
+		{
+			"name": "Ericeira",
+			"description": "Ericeira is a civil parish and seaside community on the western coast of Portugal (in Mafra municipality, about 45km northwest of Lisbon) considered the surfing capital of Europe for being the only European spot among the World Surfing Reserves and due to the exceptional coastline conditions.",
+			"adultPrice": "150",
+			"childPrice": "100",
+			"id": 3
+		},
+		{
+			"name": "Porto",
+			"description": "The city lies along the Douro River, 2 miles (3 km) from the river's mouth on the Atlantic Ocean and 175 miles (280 km) north of Lisbon. World-famous for its port wine, Porto is Portugal's second largest city and is the commercial and industrial centre for the zone north of the Mondego River.",
+			"adultPrice": "150",
+			"childPrice": "100",
+			"id": 4
+		},
+		{
+			"name": "Lisbon",
+			"description": "Lisbon is the capital and the largest city of Portugal. With over 20 centuries of History, this city located on the 7 hills has more than 500,000 inhabitants. Lisbon shows multiple contrasts between the historical and modern, combining different cultures, trends and lifestyles.",
+			"adultPrice": "200",
+			"childPrice": "100",
+			"id": 5
+		}
+	],
+	"orders": [
+		{
+			"name": "Diana",
+			"email": "diana.rasinska@gmail.com",
+			"totalPrice": "500 EUR",
+			"tripInfo": [
+				{
+					"title": "Ericeira",
+					"adultPrice": "150",
+					"adultNumber": "1",
+					"childPrice": "100",
+					"childNumber": "1"
+				}
+			],
+			"id": 1
+		},
+		{
+			"name": "Diana",
+			"email": "diana.rasinska@gmail.com",
+			"totalPrice": "500 EUR",
+			"tripInfo": [
+				{
+					"title": "Ericeira",
+					"adultPrice": "150",
+					"adultNumber": "1",
+					"childPrice": "100",
+					"childNumber": "1"
+				}
+			],
+			"id": 2
+		}
+	]
 }

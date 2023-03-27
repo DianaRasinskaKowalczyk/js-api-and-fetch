@@ -1,9 +1,11 @@
-function showAlert(errors, cb, tripBasket) {
-	if (errors.length > 0) {
-		alert(`${errors}`);
-	} else {
-		cb(tripBasket);
-	}
+function showAlert(messages) {
+	// const parent = document.querySelector(selector);
+	messages.forEach(text => {
+		// const p = document.createElement("p");
+		// p.innerText = text;
+		// parent.appendChild(p);
+		alert(text);
+	});
 }
 
-module.exports = showAlert;
+export default showAlert;

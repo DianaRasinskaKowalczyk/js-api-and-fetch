@@ -78,8 +78,13 @@ function makeTripSummary(e) {
 
 	let errors = [];
 	inputEvaluation(errors, adultNumber, childNumber);
+	console.log(errors);
 
-	showAlert(errors, addTripToSummary, tripBasket);
+	if (errors.length > 0) {
+		showAlert(errors);
+	} else {
+		addTripToSummary(tripBasket);
+	}
 }
 
 function inputEvaluation(errorsArray, adultNr, childrenNr) {
